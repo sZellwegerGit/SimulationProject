@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Game": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\szell\\source\\repos\\SimulationProject"
+    }
+  }
+}
