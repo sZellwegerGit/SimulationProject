@@ -3,36 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using SimulationProject.Classes.Singletons;
 
 namespace SimulationProject.Classes.GameClasses
 {
     internal class World
     {
         public Random rnd = new Random();
-        public List<TestObj> testObjEntities;
+        public Entity[,] debugTiles;
         public int worldSizeX = 0;
         public int worldSizeY = 0;
+        public int amountOfTiles = 20;
 
         public float gravity = 0.9f;
 
         public World(int worldSizeX, int worldSizeY) 
-        { 
-            testObjEntities = new List<TestObj>();
+        {
+            debugTiles = new Entity[amountOfTiles, amountOfTiles];
             this.worldSizeX = worldSizeX;
             this.worldSizeY = worldSizeY;
 
-            for (int n = 0; n < 200; n++)
+            for (int x = 0; x < amountOfTiles; x++)
             {
-                testObjEntities.Add(generateBall());
+                for (int y = 0; y < amountOfTiles; y++)
+                {
+                    Entity newTile = new Entity(new Vector2((x * 22) + 200, (y * 22) + 200), TextureHolder.tile1);
+                    newTile.offset.Y = (x + 3) * (y + 3) * 5; 
+                    debugTiles[x, y] = newTile;
+                }
             }
-        }
-
-        public TestObj generateBall()
-        {
-            return new TestObj(
-                (float)rnd.NextDouble() * worldSizeX,
-                (float)rnd.NextDouble() * worldSizeY,
-                (float)rnd.NextDouble() * 2f);
         }
     }
 }

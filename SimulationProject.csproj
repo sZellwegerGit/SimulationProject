@@ -16,6 +16,10 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Classes\GameClasses\Map\" />
+    <Folder Include="Classes\GameClasses\Creatures\" />
+    <Folder Include="Classes\GameClasses\Resources\" />
+    <Folder Include="Classes\GameClasses\Structures\" />
     <Folder Include="Classes\UtilClasses\" />
     <Folder Include="Classes\Wrapper\" />
     <Folder Include="Content\Fonts\" />
