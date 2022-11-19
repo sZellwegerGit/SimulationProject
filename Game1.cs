@@ -14,12 +14,13 @@ namespace SimulationProject
         private SpriteBatch _spriteBatch;
         private World gameWorld;
         private Camera cam;
+        private RenderHandler render;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferWidth = Settings.screenX;
-            _graphics.PreferredBackBufferHeight = Settings.screenY;
+            _graphics.PreferredBackBufferWidth = Settings.getScreenX();
+            _graphics.PreferredBackBufferHeight = Settings.getScreenY();
             _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -29,8 +30,10 @@ namespace SimulationProject
         {
             // load all textures
             TextureHolder.loadAll(this);
-            gameWorld = new World(Settings.screenX, Settings.screenY);
+            // gameWorld = new World(Settings.getScreenX(), Settings.getScreenY());
+            gameWorld = new World(Settings.getScreenX(), Settings.getScreenY());
             cam = new Camera();
+            render = new RenderHandler();
 
             base.Initialize();
         }
@@ -61,38 +64,34 @@ namespace SimulationProject
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
                 cam.setOffsetY(cam.getOffsetY() - 10);
 
+
+            for (int x = 0; x < gameWorld.amountOfTiles; x++)
+            {
+                for (int y = 0; y < gameWorld.amountOfTiles; y++)
+                {
+                    Entity tile = gameWorld.debugTiles[x, y];
+                    if (tile.offset.Y > 0)
+                    {
+                        tile.offset.Y -= 5;
+                    } else
+                    {
+                        tile.offset.Y = 0;
+                    }
+                    
+                    render.addToRenderer(gameWorld.debugTiles[x, y], false);
+                }
+            }
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            _spriteBatch.Begin();
 
-            
-             
-            for (int x = 0; x < gameWorld.amountOfTiles; x++)
-            {
-                for (int y = 0; y < gameWorld.amountOfTiles; y++)
-                {
-                    /*
-                     IMPLEMENT A RENDER CLASS WHERE EVERY ENTITY THAT SHOULD GET RENDERED GETS PASSED TO
-                     IT NEEDS FUNCTIONS LIKE CAM MOVEMENT, Y-SORT ETC.
-                     */
+            render.addFontToRenderer(new RenderFont(TextureHolder.baseFont, (gameTime.ElapsedGameTime.TotalMilliseconds).ToString() + " ms", Vector2.Zero, null));
 
-                    Entity currentTile = gameWorld.debugTiles[x, y];
-                    currentTile.offset.Y -= 7;
-                    if (currentTile.offset.Y < 0)
-                    {
-                        currentTile.offset.Y = 0;
-                    }
-                    _spriteBatch.Draw(currentTile.getTexture(), new Rectangle(currentTile.getRenderPosX(), currentTile.getRenderPosY(), currentTile.getTextureWidth(), currentTile.getTextureHeight()), Color.White);
-                }
-            }
-
-            _spriteBatch.DrawString(TextureHolder.baseFont, (gameTime.ElapsedGameTime.TotalMilliseconds).ToString() + " ms", Vector2.Zero, Color.White);
-
-            _spriteBatch.End();
+            render.drawAll(_spriteBatch, cam);
 
             base.Draw(gameTime);
         }

@@ -10,5 +10,15 @@ namespace SimulationProject.Classes.Singletons
     {
         public static int screenX = 1420;
         public static int screenY = 820;
+        public static int pixelRatio = 1;
+
+        public static int getScreenX()
+        {
+            return screenX * pixelRatio;
+        }
+        public static int getScreenY()
+        {
+            return screenY * pixelRatio;
+        }
     }
 }
