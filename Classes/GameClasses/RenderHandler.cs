@@ -120,6 +120,18 @@ namespace SimulationProject.Classes.GameClasses
             _sB.End();
             resetList();
         }
+        // only renders font to the screen
+        public void drawFont(SpriteBatch _sB, Camera cam)
+        {
+            _sB.Begin();
+            for (int n = 0; n < fontList.Count; n++)
+            {
+                RenderFont crf = fontList[n];
+                _sB.DrawString(crf.font, crf.text, crf.position, crf.color);
+            }
+            _sB.End();
+            resetList();
+        }
     }
 
     // RenderObj < Entity

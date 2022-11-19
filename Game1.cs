@@ -89,6 +89,23 @@ namespace SimulationProject
             base.Update(gameTime);
         }
 
+        // RenderHandler is currently VERY VERY SLOW
+        // Test : amountOfTiles = 500 > 250000 Tiles
+
+        // Standart Batching
+        // - Update Performance: 49ms
+        // - Draw Performance: 34ms
+
+        // RenderHandler
+        // - Update Performance: 35ms ?
+        // - Draw Performance: 940ms
+
+        // Possible Problems
+        // - Creation of RenderObj is incredible slow
+        //      Solutions
+        //      - Create a max of 300000 RenderObj at the beginning and then dont delete them
+        //      - Then reuse these objects
+
         protected override void Draw(GameTime gameTime)
         {
             PerformanceClockHolder.drawPerformance.startClock();
@@ -100,10 +117,26 @@ namespace SimulationProject
             render.addFontToRenderer(new RenderFont(TextureHolder.baseFont, PerformanceClockHolder.drawPerformance.getTextOutput(), new Vector2(10, 40), null, PerformanceClockHolder.drawPerformance.color));
 
             render.drawAll(_spriteBatch, cam);
+            // render.drawFont(_spriteBatch, cam);
+            // oldRender();
 
             PerformanceClockHolder.drawPerformance.endClock();
 
             base.Draw(gameTime);
+        }
+
+        public void oldRender()
+        {
+            _spriteBatch.Begin();
+            for (int x = 0; x < gameWorld.amountOfTiles; x++)
+            {
+                for (int y = 0; y < gameWorld.amountOfTiles; y++)
+                {
+                    Entity co = gameWorld.debugTiles[x, y];
+                    _spriteBatch.Draw(co.getTexture(), new Rectangle(co.getRenderPosX(), co.getRenderPosY(), co.getTextureWidth(), co.getTextureHeight()), Color.White);
+                }
+            }
+            _spriteBatch.End();
         }
     }
 }
