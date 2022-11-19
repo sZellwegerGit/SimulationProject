@@ -30,7 +30,6 @@ namespace SimulationProject
         {
             // load all textures
             TextureHolder.loadAll(this);
-            // gameWorld = new World(Settings.getScreenX(), Settings.getScreenY());
             gameWorld = new World(Settings.getScreenX(), Settings.getScreenY());
             cam = new Camera();
             render = new RenderHandler();
@@ -42,8 +41,6 @@ namespace SimulationProject
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // holds all textures (is static/singleton)
         }
 
         // Add your update logic here
