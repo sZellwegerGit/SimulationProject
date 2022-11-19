@@ -8,6 +8,7 @@ using SimulationProject.Classes;
 
 namespace SimulationProject
 {
+    // My Simulation Project
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
