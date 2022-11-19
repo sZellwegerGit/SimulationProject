@@ -20,7 +20,6 @@
     <Folder Include="Classes\GameClasses\Creatures\" />
     <Folder Include="Classes\GameClasses\Resources\" />
     <Folder Include="Classes\GameClasses\Structures\" />
-    <Folder Include="Classes\UtilClasses\" />
     <Folder Include="Classes\Wrapper\" />
     <Folder Include="Content\Fonts\" />
     <Folder Include="Content\Sprites\" />

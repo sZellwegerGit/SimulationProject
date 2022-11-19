@@ -47,6 +47,8 @@ namespace SimulationProject
         // Add your update logic here
         protected override void Update(GameTime gameTime)
         {
+            PerformanceClockHolder.updatePerformance.startClock();
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -63,6 +65,8 @@ namespace SimulationProject
                 cam.setOffsetY(cam.getOffsetY() - 10);
 
 
+            render.addTextureToRenderer(TextureHolder.debugBackground, Vector2.Zero, null, false);
+
             for (int x = 0; x < gameWorld.amountOfTiles; x++)
             {
                 for (int y = 0; y < gameWorld.amountOfTiles; y++)
@@ -70,26 +74,34 @@ namespace SimulationProject
                     Entity tile = gameWorld.debugTiles[x, y];
                     if (tile.offset.Y > 0)
                     {
-                        tile.offset.Y -= 5;
+                        tile.offset.Y -= 12;
                     } else
                     {
                         tile.offset.Y = 0;
                     }
-                    
-                    render.addToRenderer(gameWorld.debugTiles[x, y], false);
+
+                    render.addToRenderer(gameWorld.debugTiles[x, y], true);
                 }
             }
+
+            PerformanceClockHolder.updatePerformance.endClock();
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
+            PerformanceClockHolder.drawPerformance.startClock();
+
             GraphicsDevice.Clear(Color.Black);
 
-            render.addFontToRenderer(new RenderFont(TextureHolder.baseFont, (gameTime.ElapsedGameTime.TotalMilliseconds).ToString() + " ms", Vector2.Zero, null));
+            render.addFontToRenderer(new RenderFont(TextureHolder.baseFont, (gameTime.ElapsedGameTime.TotalMilliseconds).ToString() + " ms", Vector2.Zero, null, Color.White));
+            render.addFontToRenderer(new RenderFont(TextureHolder.baseFont, PerformanceClockHolder.updatePerformance.getTextOutput(), new Vector2(10,20), null, PerformanceClockHolder.updatePerformance.color));
+            render.addFontToRenderer(new RenderFont(TextureHolder.baseFont, PerformanceClockHolder.drawPerformance.getTextOutput(), new Vector2(10, 40), null, PerformanceClockHolder.drawPerformance.color));
 
             render.drawAll(_spriteBatch, cam);
+
+            PerformanceClockHolder.drawPerformance.endClock();
 
             base.Draw(gameTime);
         }

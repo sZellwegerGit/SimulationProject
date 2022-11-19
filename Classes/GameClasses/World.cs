@@ -15,7 +15,7 @@ namespace SimulationProject.Classes.GameClasses
         public Entity[,] debugTiles;
         public int worldSizeX = 0;
         public int worldSizeY = 0;
-        public int amountOfTiles = 20;
+        public int amountOfTiles = 50;
 
         public float gravity = 0.9f;
 
@@ -29,8 +29,8 @@ namespace SimulationProject.Classes.GameClasses
             {
                 for (int y = 0; y < amountOfTiles; y++)
                 {
-                    Entity newTile = new Entity(new Vector2((x * 22) + 200, (y * 22) + 200), TextureHolder.tile1);
-                    newTile.offset.Y = (x + 3) * (y + 3) * 5; 
+                    Entity newTile = new Entity(new Vector2((x * 16) + 50, (y * 16) + 50), TextureHolder.tile1);
+                    newTile.offset.Y = (x + 1) * (y + 3) * 2; 
                     debugTiles[x, y] = newTile;
                 }
             }

@@ -37,8 +37,8 @@ namespace SimulationProject.Classes.GameClasses
         public void setTexture(Texture2D texture)
         {
             this.texture = texture;
-            this.textureWidth = (int)(texture.Width * textureScale);
-            this.textureHeight = (int)(texture.Height * textureScale);
+            this.textureWidth = (int)(texture.Width);
+            this.textureHeight = (int)(texture.Height);
         }
         public Texture2D getTexture()
         {
@@ -51,6 +51,14 @@ namespace SimulationProject.Classes.GameClasses
         public int getTextureHeight()
         {
             return textureHeight;
+        }
+        public int getScaledTextureWidth()
+        {
+            return (int)(textureWidth * textureScale);
+        }
+        public int getScaledTextureHeight()
+        {
+            return (int)(textureHeight * textureScale);
         }
         // final position on screen
         public int getRenderPosX ()

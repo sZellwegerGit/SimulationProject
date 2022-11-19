@@ -58,6 +58,21 @@ namespace SimulationProject.Classes.GameClasses
             ));
         }
 
+        // add a texture straight up to the RenderHandler
+        public void addTextureToRenderer(Texture2D texture, Vector2 position, Effect effect, bool centered)
+        {
+            finalList.Add(new RenderObj(
+                texture,
+                position,
+                new Vector2(
+                    texture.Width,
+                    texture.Height
+                ),
+                null,
+                centered
+            ));
+        }
+
         // adds a String into the RenderHandler
         public void addFontToRenderer(RenderFont font)
         {
@@ -70,8 +85,11 @@ namespace SimulationProject.Classes.GameClasses
         {
             for (int n = 0; n < finalList.Count; n++)
             {
-                finalList[n].finalPosition.X += cam.getOffsetX();
-                finalList[n].finalPosition.Y += cam.getOffsetY();
+                RenderObj curObj = finalList[n];
+
+                curObj.finalPosition += new Vector2(cam.getOffsetX(), cam.getOffsetY());
+
+                if (curObj.centered) { curObj.finalPosition -= curObj.finalSize / 2; }
             } 
         }
 
@@ -97,7 +115,7 @@ namespace SimulationProject.Classes.GameClasses
             for (int n = 0; n < fontList.Count; n++)
             {
                 RenderFont crf = fontList[n];
-                _sB.DrawString(crf.font, crf.text, crf.position, Color.White);
+                _sB.DrawString(crf.font, crf.text, crf.position, crf.color);
             }
             _sB.End();
             resetList();
@@ -110,7 +128,7 @@ namespace SimulationProject.Classes.GameClasses
         public Vector2 finalPosition;
         public Vector2 finalSize;
         public Effect spriteEffect;
-        bool centered;
+        public bool centered;
 
         public RenderObj (Texture2D texture, Vector2 finalPos, Vector2 finalSize, Effect spriteEffect, bool centered)
         {
@@ -128,12 +146,14 @@ namespace SimulationProject.Classes.GameClasses
         public String text;
         public Vector2 position;
         public Effect spriteEffect;
-        public RenderFont(SpriteFont font, String text, Vector2 position, Effect spriteEffect)
+        public Color color;
+        public RenderFont(SpriteFont font, String text, Vector2 position, Effect spriteEffect, Color color)
         {
             this.font = font;
             this.text = text;
             this.position = position;
             this.spriteEffect = spriteEffect;
+            this.color = color;
         }
     }
 }
