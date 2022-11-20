@@ -25,8 +25,16 @@ namespace SimulationProject.Classes.UtilClasses
         public int finishedTimes = 1;
         public int average = 1;
 
+        //counter
+        public int count = 0;
+
         // color in which it is rendered
         public Color color;
+
+        public void clearCount ()
+        {
+            count = 0;
+        }
 
         public PerformanceClock (String name, Color color)
         {
@@ -58,6 +66,11 @@ namespace SimulationProject.Classes.UtilClasses
         public String getTextOutput()
         {
             return this.name + ": " + this.lastEnd+ "ms | " + this.getAverage() + "ms";
+        }
+
+        public String getTextOutputCount()
+        {
+            return this.name + ": " + this.count;
         }
 
     }

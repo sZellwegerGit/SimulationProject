@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SimulationProject.Classes.Singletons;
 
 namespace SimulationProject.Classes.GameClasses
 {
@@ -26,6 +27,10 @@ namespace SimulationProject.Classes.GameClasses
         // list of Strings
         private List<RenderFont> fontList;
 
+        public int finalRenderAmount = 0;
+
+        private int currentPointer = 0;
+
         // ctor
         public RenderHandler()
         {
@@ -33,44 +38,95 @@ namespace SimulationProject.Classes.GameClasses
             fontList = new List<RenderFont>();
         }
 
+        public int getFinalListCount ()
+        {
+            return finalList.Count;
+        }
+
+        public int getFinalFontCount()
+        {
+            return fontList.Count;
+        }
         // clears both lists
+        // dont reset final list as it is reusing old RenderObjs
         public void resetList()
         {
-            finalList.Clear();
             fontList.Clear();
+            currentPointer = 0;
+        }
+
+        private bool checkifAddIsNeeded()
+        {
+            return currentPointer > finalList.Count - 1;
         }
 
         // adds a Entity into the RenderHandler
+        // pretty slow i think
         public void addToRenderer(Entity entity, bool centered)
         {
-            finalList.Add(new RenderObj(
-                entity.getTexture(),
-                new Vector2(
-                    entity.getRenderPosX(),
-                    entity.getRenderPosY()
-                ),
-                new Vector2(
-                    entity.getTextureWidth(),
-                    entity.getTextureHeight()
-                ),
-                null,
-                centered
-            ));
+
+            if (checkifAddIsNeeded())
+            {
+                finalList.Add(new RenderObj(
+                    entity.getTexture(),
+                    new Vector2(
+                        entity.getRenderPosX(),
+                        entity.getRenderPosY()
+                    ),
+                    new Vector2(
+                        entity.getTextureWidth(),
+                        entity.getTextureHeight()
+                    ),
+                    null,
+                    centered
+                ));
+
+                PerformanceClockHolder.drawCountRenderObjInstance.count += 1;
+
+            } else
+            {
+
+                finalList[currentPointer].entityTexture = entity.getTexture();
+                finalList[currentPointer].finalPosition = new Vector2(entity.getRenderPosX(), entity.getRenderPosY());
+                finalList[currentPointer].finalSize = new Vector2(entity.getTextureWidth(), entity.getTextureHeight());
+                finalList[currentPointer].spriteEffect = null;
+                finalList[currentPointer].centered = centered;
+                finalList[currentPointer].dataUsed = true;
+                PerformanceClockHolder.drawReuseRenderObj.count += 1;
+            }
+            currentPointer++;
         }
 
         // add a texture straight up to the RenderHandler
         public void addTextureToRenderer(Texture2D texture, Vector2 position, Effect effect, bool centered)
         {
-            finalList.Add(new RenderObj(
-                texture,
-                position,
-                new Vector2(
-                    texture.Width,
-                    texture.Height
-                ),
-                null,
-                centered
-            ));
+            if (checkifAddIsNeeded())
+            {
+                finalList.Add(new RenderObj(
+                    texture,
+                    position,
+                    new Vector2(
+                        texture.Width,
+                        texture.Height
+                    ),
+                    null,
+                    centered
+                    ));
+
+                PerformanceClockHolder.drawCountRenderObjInstance.count += 1;
+            }
+            else
+            {
+                finalList[currentPointer].entityTexture = texture;
+                finalList[currentPointer].finalPosition = position;
+                finalList[currentPointer].finalSize = new Vector2(texture.Width, texture.Height);
+                finalList[currentPointer].spriteEffect = null;
+                finalList[currentPointer].centered = centered;
+                finalList[currentPointer].dataUsed = true;
+                PerformanceClockHolder.drawReuseRenderObj.count += 1;
+            }
+            currentPointer++;
+
         }
 
         // adds a String into the RenderHandler
@@ -93,14 +149,24 @@ namespace SimulationProject.Classes.GameClasses
             } 
         }
 
+        private int restOfFinalList(int ptr)
+        {
+            return finalList.Count - ptr - 1;
+        }
+
         // renders all sprites to the screen
         public void drawAll(SpriteBatch _sB, Camera cam)
         {
+            if (finalList.Count - 1 > currentPointer) { finalList.RemoveRange(currentPointer + 1, restOfFinalList(currentPointer)); }
+
             performRenderCalculations(cam);
             _sB.Begin();
             for (int n = 0; n < finalList.Count; n++)
             {
                 RenderObj cro = finalList[n];
+                finalRenderAmount = n + 1;
+                // never false :(
+                if (cro.dataUsed == false) { finalRenderAmount = n + 1; break; }
                 _sB.Draw(
                     cro.entityTexture,
                     new Rectangle(
@@ -110,8 +176,10 @@ namespace SimulationProject.Classes.GameClasses
                         (int)cro.finalSize.Y
                     ),
                     Color.White
-                ); ;
+                );
+                cro.dataUsed = false;
             }
+
             for (int n = 0; n < fontList.Count; n++)
             {
                 RenderFont crf = fontList[n];
@@ -136,6 +204,7 @@ namespace SimulationProject.Classes.GameClasses
 
     // RenderObj < Entity
     internal class RenderObj {
+        public bool dataUsed = false;
         public Texture2D entityTexture;
         public Vector2 finalPosition;
         public Vector2 finalSize;
@@ -144,6 +213,7 @@ namespace SimulationProject.Classes.GameClasses
 
         public RenderObj (Texture2D texture, Vector2 finalPos, Vector2 finalSize, Effect spriteEffect, bool centered)
         {
+            this.dataUsed = true;
             this.entityTexture = texture;
             this.finalPosition = finalPos;
             this.finalSize = finalSize;

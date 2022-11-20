@@ -15,7 +15,8 @@ namespace SimulationProject.Classes.GameClasses
         public Entity[,] debugTiles;
         public int worldSizeX = 0;
         public int worldSizeY = 0;
-        public int amountOfTiles = 50;
+        public int amountOfTiles = 10;
+        public int tileSize = 30;
 
         public float gravity = 0.9f;
 
@@ -29,11 +30,44 @@ namespace SimulationProject.Classes.GameClasses
             {
                 for (int y = 0; y < amountOfTiles; y++)
                 {
-                    Entity newTile = new Entity(new Vector2((x * 16) + 50, (y * 16) + 50), TextureHolder.tile1);
-                    newTile.offset.Y = (x + 1) * (y + 3) * 2; 
+                    Entity newTile = new Entity(new Vector2((x * tileSize) + 50, (y * tileSize) + 50), TextureHolder.tile1);
+                    // newTile.offset.Y = (x + 1) * (y + 3) * 2; 
                     debugTiles[x, y] = newTile;
                 }
             }
         }
+
+        public void EnlargenWorld()
+        {
+            amountOfTiles += 20;
+            debugTiles = new Entity[amountOfTiles, amountOfTiles];
+
+            for (int x = 0; x < amountOfTiles; x++)
+            {
+                for (int y = 0; y < amountOfTiles; y++)
+                {
+                    Entity newTile = new Entity(new Vector2((x * tileSize) + 50, (y * tileSize) + 50), TextureHolder.tile1);
+                    // newTile.offset.Y = (x + 1) * (y + 3) * 2; 
+                    debugTiles[x, y] = newTile;
+                }
+            }
+        }
+
+        public void EnSmallenWorld()
+        {
+            amountOfTiles -= 10;
+            debugTiles = new Entity[amountOfTiles, amountOfTiles];
+
+            for (int x = 0; x < amountOfTiles; x++)
+            {
+                for (int y = 0; y < amountOfTiles; y++)
+                {
+                    Entity newTile = new Entity(new Vector2((x * tileSize) + 50, (y * tileSize) + 50), TextureHolder.tile1);
+                    // newTile.offset.Y = (x + 1) * (y + 3) * 2; 
+                    debugTiles[x, y] = newTile;
+                }
+            }
+        }
+
     }
 }
