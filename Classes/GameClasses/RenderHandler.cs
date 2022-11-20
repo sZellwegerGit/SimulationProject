@@ -74,8 +74,8 @@ namespace SimulationProject.Classes.GameClasses
                         entity.getRenderPosY()
                     ),
                     new Vector2(
-                        entity.getTextureWidth(),
-                        entity.getTextureHeight()
+                        entity.getScaledTextureWidth(),
+                        entity.getScaledTextureHeight()
                     ),
                     null,
                     centered
@@ -88,7 +88,7 @@ namespace SimulationProject.Classes.GameClasses
 
                 finalList[currentPointer].entityTexture = entity.getTexture();
                 finalList[currentPointer].finalPosition = new Vector2(entity.getRenderPosX(), entity.getRenderPosY());
-                finalList[currentPointer].finalSize = new Vector2(entity.getTextureWidth(), entity.getTextureHeight());
+                finalList[currentPointer].finalSize = new Vector2(entity.getScaledTextureWidth(), entity.getScaledTextureHeight());
                 finalList[currentPointer].spriteEffect = null;
                 finalList[currentPointer].centered = centered;
                 finalList[currentPointer].dataUsed = true;
@@ -160,7 +160,7 @@ namespace SimulationProject.Classes.GameClasses
             if (finalList.Count - 1 > currentPointer) { finalList.RemoveRange(currentPointer + 1, restOfFinalList(currentPointer)); }
 
             performRenderCalculations(cam);
-            _sB.Begin();
+            _sB.Begin(0,null, SamplerState.PointWrap);
             for (int n = 0; n < finalList.Count; n++)
             {
                 RenderObj cro = finalList[n];

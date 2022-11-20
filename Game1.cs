@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using SimulationProject.Classes.Singletons;
 using SimulationProject.Classes.GameClasses;
 using SimulationProject.Classes;
+using SimulationProject.Classes.GameClasses.Map;
 
 namespace SimulationProject
 {
@@ -31,7 +32,7 @@ namespace SimulationProject
         {
             // load all textures
             TextureHolder.loadAll(this);
-            gameWorld = new World(Settings.getScreenX(), Settings.getScreenY());
+            gameWorld = new World(Settings.getScreenX(), Settings.getScreenY(), 30);
             cam = new Camera();
             render = new RenderHandler();
 
@@ -64,12 +65,6 @@ namespace SimulationProject
 
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
                 cam.setOffsetY(cam.getOffsetY() - 10);
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
-                gameWorld.EnlargenWorld();
-
-            if (Keyboard.GetState().IsKeyDown(Keys.LeftAlt))
-                gameWorld.EnSmallenWorld();
 
             PerformanceClockHolder.updatePerformance.endClock();
 
@@ -118,13 +113,16 @@ namespace SimulationProject
             // background
             render.addTextureToRenderer(TextureHolder.debugBackground, Vector2.Zero, null, false);
 
-            for (int x = 0; x < gameWorld.amountOfTiles; x++)
+            for (int x = 0; x < gameWorld.tileMapX(); x++)
             {
-                for (int y = 0; y < gameWorld.amountOfTiles; y++)
+                for (int y = 0; y < gameWorld.tileMapY(); y++)
                 {
-                    Entity tile = gameWorld.debugTiles[x, y];
-                    // this function is very slow
-                    render.addToRenderer(gameWorld.debugTiles[x, y], true);
+                    Tile tile = gameWorld.returnTilemap().returnTile(x, y);
+                    
+                    if (tile != null)
+                    {
+                        render.addToRenderer(gameWorld.getMap()[x, y], true);
+                    }
                 }
             }
 
@@ -157,11 +155,11 @@ namespace SimulationProject
         public void oldRender()
         {
             _spriteBatch.Begin();
-            for (int x = 0; x < gameWorld.amountOfTiles; x++)
+            for (int x = 0; x < gameWorld.tileMapX(); x++)
             {
-                for (int y = 0; y < gameWorld.amountOfTiles; y++)
+                for (int y = 0; y < gameWorld.tileMapY(); y++)
                 {
-                    Entity co = gameWorld.debugTiles[x, y];
+                    Entity co = gameWorld.getMap()[x, y];
                     _spriteBatch.Draw(co.getTexture(), new Rectangle(co.getRenderPosX(), co.getRenderPosY(), co.getTextureWidth(), co.getTextureHeight()), Color.White);
                 }
             }

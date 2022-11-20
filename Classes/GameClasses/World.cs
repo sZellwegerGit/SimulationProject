@@ -6,68 +6,41 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SimulationProject.Classes.Singletons;
+using SimulationProject.Classes.GameClasses.Map;
 
 namespace SimulationProject.Classes.GameClasses
 {
     internal class World
     {
         public Random rnd = new Random();
-        public Entity[,] debugTiles;
-        public int worldSizeX = 0;
-        public int worldSizeY = 0;
-        public int amountOfTiles = 10;
-        public int tileSize = 30;
+        public Tilemap tilemap;
 
         public float gravity = 0.9f;
 
-        public World(int worldSizeX, int worldSizeY) 
+        public World(int worldSizeX, int worldSizeY, int tileSize) 
         {
-            debugTiles = new Entity[amountOfTiles, amountOfTiles];
-            this.worldSizeX = worldSizeX;
-            this.worldSizeY = worldSizeY;
-
-            for (int x = 0; x < amountOfTiles; x++)
-            {
-                for (int y = 0; y < amountOfTiles; y++)
-                {
-                    Entity newTile = new Entity(new Vector2((x * tileSize) + 50, (y * tileSize) + 50), TextureHolder.tile1);
-                    // newTile.offset.Y = (x + 1) * (y + 3) * 2; 
-                    debugTiles[x, y] = newTile;
-                }
-            }
+            tilemap = new Tilemap(worldSizeX, worldSizeY, tileSize);
         }
 
-        public void EnlargenWorld()
+        public Tilemap returnTilemap()
         {
-            amountOfTiles += 20;
-            debugTiles = new Entity[amountOfTiles, amountOfTiles];
-
-            for (int x = 0; x < amountOfTiles; x++)
-            {
-                for (int y = 0; y < amountOfTiles; y++)
-                {
-                    Entity newTile = new Entity(new Vector2((x * tileSize) + 50, (y * tileSize) + 50), TextureHolder.tile1);
-                    // newTile.offset.Y = (x + 1) * (y + 3) * 2; 
-                    debugTiles[x, y] = newTile;
-                }
-            }
+            return tilemap;
         }
-
-        public void EnSmallenWorld()
+        public int tileMapX()
         {
-            amountOfTiles -= 10;
-            debugTiles = new Entity[amountOfTiles, amountOfTiles];
-
-            for (int x = 0; x < amountOfTiles; x++)
-            {
-                for (int y = 0; y < amountOfTiles; y++)
-                {
-                    Entity newTile = new Entity(new Vector2((x * tileSize) + 50, (y * tileSize) + 50), TextureHolder.tile1);
-                    // newTile.offset.Y = (x + 1) * (y + 3) * 2; 
-                    debugTiles[x, y] = newTile;
-                }
-            }
+            return tilemap.worldSizeX;
         }
-
+        public int tileMapY()
+        {
+            return tilemap.worldSizeY;
+        }
+        public int tileSize()
+        {
+            return tilemap.tileSize;
+        }
+        public Tile[,] getMap()
+        {
+            return tilemap.map;
+        }
     }
 }

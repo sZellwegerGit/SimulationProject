@@ -21,7 +21,7 @@ namespace SimulationProject.Classes.GameClasses
         private Texture2D texture;
         private int textureWidth = 0;
         private int textureHeight = 0;
-        private float textureScale = 1.0f;
+        private float textureScale = 2.0f;
 
         // is entity being rendered
         Boolean visible = true;
